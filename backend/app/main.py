@@ -11,6 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.routers import ROUTERS
 from app.store import store
+from app.bootstrap import bootstrap_demo_data
 
 app = FastAPI(title="分布式网页抓取调度平台", version="1.0.0")
 
@@ -24,6 +25,9 @@ app.add_middleware(
 
 for module in ROUTERS:
     app.include_router(module.router)
+
+# 预置规则版本快照与演示准入批次；幂等，重复启动不会生成第二份数据。
+bootstrap_demo_data()
 
 
 @app.get("/api/health")
